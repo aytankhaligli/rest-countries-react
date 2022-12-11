@@ -66,9 +66,12 @@ export default function DetailsPage({ country }) {
             <div className="text-center">
               <strong>Border Countries: </strong>
             </div>
-            <div className="border-grid">
-              {borderElement ? borderElement : <p>Dont have neighbor</p>}
-            </div>
+
+            {borderElement ? (
+              <div className="border-grid">{borderElement} </div>
+            ) : (
+              <p>Dont have neighbor</p>
+            )}
           </div>
         </div>
       </div>
