@@ -6,19 +6,15 @@ import { Context } from "./Context";
 import { Route, Routes } from "react-router-dom";
 
 function App() {
-  const { theme, goDetails, country } = useContext(Context);
+  const { theme } = useContext(Context);
   return (
     <div className={`app ${theme}`}>
       <Navbar />
       <main className="main ">
-        {/* <Routes>
+        <Routes>
           <Route path="/" element={<CountryPage />} />
-          <Route
-            path={`/country/:${country.name}`}
-            element={<DetailsPage country={country} />}
-          />
-        </Routes> */}
-        {!goDetails ? <CountryPage /> : <DetailsPage country={country} />}
+          <Route path="/country/:countryName" element={<DetailsPage />} />
+        </Routes>
       </main>
     </div>
   );

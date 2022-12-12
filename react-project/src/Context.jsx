@@ -3,29 +3,27 @@ const Context = React.createContext();
 
 function ContextProvider(props) {
   const [theme, setTheme] = useState("dark");
-  const [filtered, setFiltered] = useState(false);
+  const [opened, setOpened] = useState(false);
   const [data, setData] = useState([]);
-  const ref = useRef(null);
+  const [errorMsg, setErrorMsg] = useState("Loading...");
   const [searchCountry, setSearchCountry] = useState("");
-  const [goDetails, setGoDetails] = useState(false);
-  const [country, setCountry] = useState({});
   const [searchingData, setSearchingData] = useState([]);
+  const ref = useRef(null);
+
   useEffect(() => {
     fetch("https://restcountries.com/v3.1/all")
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Something went wrong!!");
+        } else {
+          return res.json();
+        }
+      })
       .then((data) => {
         setData(data);
-      });
+      })
+      .catch((err) => setErrorMsg(err.message));
   }, []);
-
-  function goDetailsPage(country) {
-    setCountry(country);
-    setGoDetails(true);
-  }
-
-  function goBack() {
-    setGoDetails(false);
-  }
 
   function handleChange() {
     setSearchCountry(ref.current.value.toLowerCase());
@@ -37,7 +35,6 @@ function ContextProvider(props) {
         return name.includes(searchCountry);
       }
     });
-    // setData(searchData);
     setSearchingData(searchData);
   }
 
@@ -51,32 +48,31 @@ function ContextProvider(props) {
       }
     });
     setSearchingData(filterData);
+    setOpened(false);
   }
 
-  function filter() {
-    setFiltered((prev) => !prev);
+  function openFilterModal() {
+    setOpened((prev) => !prev);
   }
 
   function toggleTheme() {
     setTheme((prevState) => (prevState === "light" ? "dark" : "light"));
   }
+
   return (
     <Context.Provider
       value={{
         theme,
         toggleTheme,
-        filtered,
-        filter,
+        opened,
+        openFilterModal,
         data,
         ref,
         handleChange,
         searchCountry,
         filterCountry,
-        goDetails,
-        goDetailsPage,
-        country,
-        goBack,
         searchingData,
+        errorMsg,
       }}
     >
       {props.children}

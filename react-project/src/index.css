@@ -149,6 +149,10 @@ body {
   margin-top: 4.6rem;
   justify-items: center;
 }
+.loadtext {
+  font-size: 2rem;
+  margin-top: 2rem;
+}
 .card {
   max-width: 26rem;
   height: 34rem;
@@ -297,7 +301,7 @@ a {
     gap: 4rem;
   }
 }
-@media (max-width: 25em) {
+@media (max-width: 40em) {
   .navbar {
     padding: 3rem;
   }

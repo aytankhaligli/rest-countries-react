@@ -1,80 +1,99 @@
-import React, { useContext } from "react";
+import React from "react";
+import { useContext } from "react";
+import { Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Context } from "../Context";
 
-export default function DetailsPage({ country }) {
-  const { goBack } = useContext(Context);
-  const languages = Object.values(country.languages).toString();
-  const currencies = Object.keys(country.currencies).toString();
-  const population = Number(
-    parseFloat(country.population).toFixed(2)
-  ).toLocaleString("en");
-  const borderElement =
-    "borders" in country
+export default function DetailsPage() {
+  const { countryName } = useParams();
+  const { data, errorMsg } = useContext(Context);
+  const [country] = data.filter(
+    (country) => country.name.common === countryName
+  );
+
+  const languages = country && Object.values(country.languages).toString();
+  const currencies = country && Object.keys(country.currencies).toString();
+  const population =
+    country &&
+    Number(parseFloat(country.population).toFixed(2)).toLocaleString("en");
+  const borderElement = country
+    ? "borders" in country
       ? country.borders.map((border) => (
           <div className="border-country" key={border}>
             {border}
           </div>
         ))
-      : null;
+      : null
+    : "";
 
   return (
     <div className="details-page">
-      <button className="back-button" onClick={goBack}>
-        <ion-icon name="arrow-back"></ion-icon>
-        Back
-      </button>
-      <div className="details">
-        <div className="details-img-box">
-          <img src={country.flags.png} />
-        </div>
-        <div className="details-text-box">
-          <h1 className="country">{country.name.common}</h1>
-          <div className="grid">
-            <div>
-              <p>
-                <strong>Native Name:</strong> {country.name.official}
-              </p>
+      <Link to="/">
+        <button className="back-button">
+          <ion-icon name="arrow-back"></ion-icon>
+          Back
+        </button>
+      </Link>
 
-              <p>
-                <strong>Population: </strong> {population}
-              </p>
+      {country ? (
+        <div className="details">
+          <div className="details-img-box">
+            <img src={country.flags.png} />
+          </div>
+          <div className="details-text-box">
+            <h1 className="country">{country.name.common}</h1>
+            <div className="grid">
+              <div>
+                <p>
+                  <strong>Native Name:</strong> {country.name.official}
+                </p>
 
-              <p>
-                <strong>Region:</strong> {country.region}
-              </p>
-              <p>
-                <strong>Sub Region:</strong> {country.subregion}
-              </p>
-              <p>
-                <strong>Capital:</strong> {country.capital.toString()}
-              </p>
+                <p>
+                  <strong>Population: </strong>
+                  {population}
+                </p>
+
+                <p>
+                  <strong>Region:</strong> {country.region}
+                </p>
+                <p>
+                  <strong>Sub Region:</strong> {country.subregion}
+                </p>
+                <p>
+                  <strong>Capital:</strong> {country.capital.toString()}
+                </p>
+              </div>
+              <div>
+                <p>
+                  <strong>Top Level Domain: </strong>
+                  {country.tld.toString()}
+                </p>
+                <p>
+                  <strong>Currencies: </strong>
+                  {currencies}
+                </p>
+                <p>
+                  <strong>Languages: </strong>
+                  {languages}
+                </p>
+              </div>
             </div>
-            <div>
-              <p>
-                <strong>Top Level Domain:</strong>{" "}
-                {country.tld.toString().slice(1)}
-              </p>
-              <p>
-                <strong>Currencies: </strong> {currencies}
-              </p>
-              <p>
-                <strong>Languages: </strong> {languages}
-              </p>
+            <div className="border">
+              <div className="text-center">
+                <strong>Border Countries: </strong>
+              </div>
+
+              {borderElement ? (
+                <div className="border-grid">{borderElement} </div>
+              ) : (
+                <p>Dont have neighbor</p>
+              )}
             </div>
           </div>
-          <div className="border">
-            <div className="text-center">
-              <strong>Border Countries: </strong>
-            </div>
-
-            {borderElement ? (
-              <div className="border-grid">{borderElement} </div>
-            ) : (
-              <p>Dont have neighbor</p>
-            )}
-          </div>
         </div>
-      </div>
+      ) : (
+        <p className="loadtext">{errorMsg}</p>
+      )}
     </div>
   );
 }

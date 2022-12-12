@@ -1,13 +1,11 @@
-import React, { useContext } from "react";
-import { Context } from "../Context";
+import React from "react";
 export default function CountryCard({ country }) {
-  const { goDetailsPage } = useContext(Context);
   const population = Number(
     parseFloat(country.population).toFixed(2)
   ).toLocaleString("en");
   return (
     <div>
-      <div className="card" onClick={() => goDetailsPage(country)}>
+      <div className="card">
         <img src={country.flags.png} />
         <div className="country-details">
           <p className="country-name">{country.name.common}</p>
